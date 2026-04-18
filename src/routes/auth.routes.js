@@ -12,6 +12,7 @@ const {
   loginUserController,
   logoutUserController,
   getMeController,
+  googleLoginController,
 } = require("../controller/auth.controller");
 
 const authMiddleware = require("../middlewares/auth.middleware");
@@ -49,5 +50,7 @@ authRouter.post("/logout", logoutUserController);
  */
 
 authRouter.get("/get-me", authMiddleware.authUser, getMeController);
+
+authRouter.post("/google", googleLoginController);
 
 module.exports = authRouter;

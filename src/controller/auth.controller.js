@@ -2,6 +2,8 @@ const userModel = require("../models/user.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const tokenBlacklistModel = require("../models/blacklist.model");
+const generateToken = require("../utils/generateToken");
+const verifyGoogleToken = require("../services/googleAuth.service");
 
 /**
  * @name registerUserController
@@ -49,11 +51,7 @@ async function registerUserController(req, res) {
       password: hash,
     });
 
-    const token = jwt.sign(
-      { id: user._id, username: user.username },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" },
-    );
+    const token = generateToken(user);
 
     res.cookie("token", token);
 
@@ -100,19 +98,7 @@ async function loginUserController(req, res) {
       });
     }
 
-    // const token = jwt.sign(
-    //   { id: user._id, username: user.username },
-    //   process.env.JWT_SECRET,
-    //   { expiresIn: "1d" },
-    // );
-
-    // res.cookie("token", token);
-
-    const token = jwt.sign(
-      { id: user._id, username: user.username },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" },
-    );
+    const token = generateToken(user);
 
     res.cookie("token", token, {
       httpOnly: true,
@@ -200,9 +186,83 @@ async function getMeController(req, res) {
   }
 }
 
+// Google OAuth controller for login
+
+// async function googleLoginController(req, res) {
+//   const { credential } = req.body;
+
+//   const payload = await verifyGoogleToken(credential);
+//   console.log("Google payload:", payload);
+//   console.log("Generated JWT:", token);
+
+//   let user = await userModel.findOne({ email: payload.email });
+
+//   if (!user) {
+//     user = await userModel.create({
+//       username: payload.name,
+//       email: payload.email,
+//       // avatar: payload.picture,
+//     });
+//   }
+
+//   const token = generateToken(user);
+
+//   res.cookie("token", token, {
+//     httpOnly: true,
+//     sameSite: "none",
+//     secure: false,
+//     path: "/",
+//   });
+
+//   res.status(200).json({
+//     message: "Google login success",
+//   });
+// }
+
+async function googleLoginController(req, res) {
+  try {
+    const { credential } = req.body;
+
+    if (!credential) {
+      return res.status(400).json({ message: "No credential provided" });
+    }
+
+    const payload = await verifyGoogleToken(credential);
+    // console.log("Google payload:", payload); // ✅ payload exists here
+
+    let user = await userModel.findOne({ email: payload.email });
+
+    if (!user) {
+      user = await userModel.create({
+        username: payload.name,
+        email: payload.email,
+      });
+    }
+
+    const token = generateToken(user); // ✅ declared FIRST
+    // console.log("Generated JWT:", token); // ✅ logged AFTER declaration
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "lax", // ✅ lax for localhost HTTP
+      secure: false,
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    return res.status(200).json({ message: "Google login success" });
+  } catch (err) {
+    console.error("Google login error:", err.message); // ✅ you'll see errors now
+    return res
+      .status(500)
+      .json({ message: "Google login failed", error: err.message });
+  }
+}
+
 module.exports = {
   registerUserController,
   loginUserController,
   logoutUserController,
   getMeController,
+  googleLoginController,
 };
