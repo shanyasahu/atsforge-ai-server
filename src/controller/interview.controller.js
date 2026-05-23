@@ -9,6 +9,7 @@ async function generateInterviewReportController(req, res) {
   const resumeContent = await new pdfParse.PDFParse(
     Uint8Array.from(req.file.buffer),
   ).getText();
+
   const { selfDescription, jobDescription } = req.body;
 
   const interViewReportByAi = await generateInterviewReport({
@@ -17,7 +18,7 @@ async function generateInterviewReportController(req, res) {
     jobDescription,
   });
 
-  console.log("AI RESPONSE:", JSON.stringify(interViewReportByAi, null, 2));
+  // console.log("AI RESPONSE:", JSON.stringify(interViewReportByAi, null, 2));
 
   const interviewReport = await interviewReportModel.create({
     user: req.user.id,

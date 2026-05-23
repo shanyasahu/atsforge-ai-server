@@ -188,37 +188,6 @@ async function getMeController(req, res) {
 
 // Google OAuth controller for login
 
-// async function googleLoginController(req, res) {
-//   const { credential } = req.body;
-
-//   const payload = await verifyGoogleToken(credential);
-//   console.log("Google payload:", payload);
-//   console.log("Generated JWT:", token);
-
-//   let user = await userModel.findOne({ email: payload.email });
-
-//   if (!user) {
-//     user = await userModel.create({
-//       username: payload.name,
-//       email: payload.email,
-//       // avatar: payload.picture,
-//     });
-//   }
-
-//   const token = generateToken(user);
-
-//   res.cookie("token", token, {
-//     httpOnly: true,
-//     sameSite: "none",
-//     secure: false,
-//     path: "/",
-//   });
-
-//   res.status(200).json({
-//     message: "Google login success",
-//   });
-// }
-
 async function googleLoginController(req, res) {
   try {
     const { credential } = req.body;
