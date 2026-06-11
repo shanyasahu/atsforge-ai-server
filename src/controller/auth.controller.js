@@ -53,7 +53,14 @@ async function registerUserController(req, res) {
 
     const token = generateToken(user);
 
-    res.cookie("token", token);
+    // res.cookie("token", token);
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
 
     res.status(201).json({
       message: "User successfully registerd!",
@@ -100,10 +107,18 @@ async function loginUserController(req, res) {
 
     const token = generateToken(user);
 
+    // res.cookie("token", token, {
+    //   httpOnly: true,
+    //   sameSite: "lax",
+    //   path: "/",
+    // });
+
     res.cookie("token", token, {
       httpOnly: true,
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
       path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     res.status(200).json({
@@ -211,10 +226,18 @@ async function googleLoginController(req, res) {
     const token = generateToken(user); // ✅ declared FIRST
     // console.log("Generated JWT:", token); // ✅ logged AFTER declaration
 
+    // res.cookie("token", token, {
+    //   httpOnly: true,
+    //   sameSite: "lax", // ✅ lax for localhost HTTP
+    //   secure: false,
+    //   path: "/",
+    //   maxAge: 7 * 24 * 60 * 60 * 1000,
+    // });
+
     res.cookie("token", token, {
       httpOnly: true,
-      sameSite: "lax", // ✅ lax for localhost HTTP
-      secure: false,
+      secure: true,
+      sameSite: "none",
       path: "/",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
