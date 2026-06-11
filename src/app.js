@@ -14,7 +14,7 @@ app.use(
   }),
 );
 
-//require all the routes here
+//require all the routes here --
 const authRouter = require("./routes/auth.routes");
 const interviewRouter = require("./routes/interview.routes");
 
