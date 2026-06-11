@@ -9,17 +9,17 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "https://atsforge-ai.vercel.app"],
     credentials: true,
   }),
 );
 
 //require all the routes here
 const authRouter = require("./routes/auth.routes");
-const interviewRouter = require("./routes/interview.routes")
+const interviewRouter = require("./routes/interview.routes");
 
 //using all the routes here
 app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/interview", interviewRouter)
+app.use("/api/v1/interview", interviewRouter);
 
 module.exports = app;
