@@ -194,9 +194,3 @@ curl http://localhost:3000/api/v1/health
 | `SavedResume` | Resume builder drafts |
 | `Application` | Job application tracker |
 | `blacklist` | Invalidated JWT tokens |
-
----
-
-## Related
-
-- **Frontend client** — [`../atsforge-ai-client/README.md`](../atsforge-ai-client/README.md)
