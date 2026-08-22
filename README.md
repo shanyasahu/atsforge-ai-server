@@ -152,17 +152,6 @@ npm install
 cp .env.example .env          # Windows: copy .env.example .env
 ```
 
-Edit `.env`:
-
-```env
-PORT=3000
-MONGODB_URI=mongodb://127.0.0.1:27017/atsforge-ai
-JWT_SECRET=your-strong-secret
-GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
-GOOGLE_GENAI_API_KEY=your-gemini-api-key
-GEMINI_MODEL=gemini-3-flash-preview
-```
-
 ### Run
 
 ```bash
