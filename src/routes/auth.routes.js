@@ -13,9 +13,14 @@ const {
   logoutUserController,
   getMeController,
   googleLoginController,
+  updateProfileController,
+  changePasswordController,
+  uploadAvatarController,
+  removeAvatarController,
 } = require("../controller/auth.controller");
 
 const authMiddleware = require("../middlewares/auth.middleware");
+const avatarUpload = require("../middlewares/avatar.middleware");
 
 const authRouter = Router();
 
@@ -50,6 +55,20 @@ authRouter.post("/logout", logoutUserController);
  */
 
 authRouter.get("/get-me", authMiddleware.authUser, getMeController);
+
+authRouter.patch("/profile", authMiddleware.authUser, updateProfileController);
+authRouter.patch("/password", authMiddleware.authUser, changePasswordController);
+authRouter.post(
+  "/avatar",
+  authMiddleware.authUser,
+  avatarUpload.single("avatar"),
+  uploadAvatarController,
+);
+authRouter.delete(
+  "/avatar",
+  authMiddleware.authUser,
+  removeAvatarController,
+);
 
 authRouter.post("/google", googleLoginController);
 

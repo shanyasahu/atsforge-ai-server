@@ -76,6 +76,14 @@ const preparationPlanSchema = new mongoose.Schema({
 
 const interviewReportSchema = new mongoose.Schema(
   {
+    jobTitle: {
+      type: String,
+      default: "",
+    },
+    company: {
+      type: String,
+      default: "",
+    },
     jobDescription: {
       type: String,
       required: [true, "Job description is required"],
@@ -97,17 +105,17 @@ const interviewReportSchema = new mongoose.Schema(
     preparationPlan: [preparationPlanSchema],
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "users",
+      ref: "user",
+      required: [true, "User is required"],
+      index: true,
     },
-    // title: {
-    //   type: String,
-    //   required: [true, "Job title is required"],
-    // },
   },
   {
     timestamps: true,
   },
 );
+
+interviewReportSchema.index({ user: 1, createdAt: -1 });
 
 const interviewReportModel = mongoose.model(
   "InterviewReport",
