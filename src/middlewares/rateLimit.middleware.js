@@ -24,4 +24,11 @@ const apiLimiter = rateLimit({
   message: { message: "Too many requests. Please slow down." },
 });
 
-module.exports = { authLimiter, aiLimiter, apiLimiter };
+function authLimiterUnlessSession(req, res, next) {
+  if (req.method === "GET" && req.path.endsWith("/get-me")) {
+    return next();
+  }
+  return authLimiter(req, res, next);
+}
+
+module.exports = { authLimiter, authLimiterUnlessSession, aiLimiter, apiLimiter };

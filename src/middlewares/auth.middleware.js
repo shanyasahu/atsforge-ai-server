@@ -10,11 +10,16 @@ async function authUser(req, res, next) {
     });
   }
 
-  //check the token is black listed or not
+  let decoded;
+  try {
+    decoded = jwt.verify(token, process.env.JWT_SECRET);
+  } catch {
+    return res.status(401).json({
+      message: "Invalid token!",
+    });
+  }
 
-  const isTokenBlackListed = await tokenBlacklistModel.findOne({
-    token,
-  });
+  const isTokenBlackListed = await tokenBlacklistModel.exists({ token });
 
   if (isTokenBlackListed) {
     return res.status(401).json({
@@ -22,17 +27,8 @@ async function authUser(req, res, next) {
     });
   }
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    req.user = decoded;
-
-    next();
-  } catch (err) {
-    return res.status(401).json({
-      message: "Invalid token!",
-    });
-  }
+  req.user = decoded;
+  next();
 }
 
 module.exports = { authUser };

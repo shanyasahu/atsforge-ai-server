@@ -137,7 +137,10 @@ async function logoutUserController(req, res) {
 
 async function getMeController(req, res) {
   try {
-    const user = await userModel.findById(req.user.id);
+    const user = await userModel
+      .findById(req.user.id)
+      .select("username email plan avatarUrl updatedAt authProvider")
+      .lean();
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });

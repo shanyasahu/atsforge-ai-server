@@ -3,7 +3,7 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const helmet = require("helmet");
-const { apiLimiter, authLimiter } = require("./middlewares/rateLimit.middleware");
+const { apiLimiter, authLimiterUnlessSession } = require("./middlewares/rateLimit.middleware");
 const sanitizeRequest = require("./middlewares/sanitize.middleware");
 
 const app = express();
@@ -47,7 +47,7 @@ app.get("/api/v1/health", (req, res) => {
   res.status(200).json({ ok: true, service: "atsforge-ai-server" });
 });
 
-app.use("/api/v1/auth", authLimiter, authRouter);
+app.use("/api/v1/auth", authLimiterUnlessSession, authRouter);
 app.use("/api/v1/interview", interviewRouter);
 app.use("/api/v1/resume", resumeRouter);
 app.use("/api/v1/skill-gap", skillGapRouter);
